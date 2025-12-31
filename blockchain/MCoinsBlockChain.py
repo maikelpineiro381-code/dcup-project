@@ -242,6 +242,7 @@ def home():
     <ul>
         <li><a href="/chain">/chain</a> → Ver la blockchain</li>
         <li><a href="/balance">/balance</a> → Ver balances</li>
+        <li><a href="/balance/&lt;address&gt;">/balance/&lt;address&gt;</a> → Ver balance de una dirección</li>
         <li><a href="/collectibles">/collectibles</a> → Ver coleccionables</li>
         <li>/transaction (POST) → Enviar transacciones (token o coleccionable)</li>
         <li>/fund (POST) → Enviar fondos desde GenWallet</li>
@@ -253,8 +254,14 @@ def get_chain():
     return jsonify(chain.export_chain()), 200
 
 @app.route("/balance", methods=['GET'])
-def get_balance():
+def get_balance_all():
     return jsonify(chain.balances), 200
+
+# 🔹 Nuevo endpoint: balance por dirección
+@app.route("/balance/<address>", methods=['GET'])
+def get_balance_address(address: str):
+    balance = chain.balances.get(address, 0)
+    return jsonify({"address": address, "balance": balance}), 200
 
 @app.route("/collectibles", methods=['GET'])
 def get_collectibles():
